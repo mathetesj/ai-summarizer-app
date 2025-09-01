@@ -9,9 +9,10 @@ import google.generativeai as genai
 def split_audio_with_ffmpeg(file_path, temp_folder, chunk_duration_sec=1500):
     if not os.path.exists(temp_folder): os.makedirs(temp_folder)
     try:
-        # ✨ 개선된 부분: 시스템에서 ffmpeg을 직접 찾도록 경로를 지정하지 않음
+        # ✨ 개선된 부분: Streamlit 환경에서 ffmpeg을 직접 찾도록 명령어를 문자열로 변경
         command = f'ffmpeg -i "{file_path}" -f segment -segment_time {chunk_duration_sec} -c copy "{os.path.join(temp_folder, "chunk_%03d.m4a")}"'
-        # subprocess.run에 shell=True 옵션을 추가하여 문자열 명령어를 직접 실행
+
+        # shell=True 옵션을 추가하여 명령어 실행
         subprocess.run(command, shell=True, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         return sorted(glob.glob(os.path.join(temp_folder, "chunk_*.m4a")))
     except Exception as e:
